@@ -1,0 +1,37 @@
+
+
+
+Phx 1.3
+
+mix phx.new.web ticker_phoenix --no-brunch --no-html --umbrella
+
+
+
+
+
+Stock Data API
+
+https://www.alphavantage.co/
+
+Welcome to Alpha Vantage! Here is your API key: BMJUV89AV3WCXFWU. Please record this API key for lifetime access to Alpha Vantage.
+
+
+
+
+
+
+Ticker
+
+Registry.match(:process_registry, {"Stock", :_, :_}, :_)
+
+[[{#PID<0.314.0>, {"Stock", "FB", "45"}}], [{#PID<0.317.0>, {"Stock", "FB", "37"}}],
+ [{#PID<0.319.0>, {"Stock", "APPL", "128"}}], [{#PID<0.322.0>, {"Stock", "APPL", "131"}}]]
+
+
+Registry.match(:process_registry, {"Stock", "FB", :_}, :_)
+
+[[{#PID<0.314.0>, {"Stock", "FB", "45"}}], [{#PID<0.317.0>, {"Stock", "FB", "37"}}]]
+
+
+
+ time_frame_pids = Registry.match(:process_registry, {Ticker.TimeFrame, @symbol, 1}, :_)

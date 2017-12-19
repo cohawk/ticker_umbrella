@@ -23,8 +23,10 @@ defmodule Ticker.Quote.Processor.HTTP do
     end
   end
 
+  # https://min-api.cryptocompare.com/data/pricemultifull?tsyms=USD&fsyms=BTC,ETH,LTC,XRP,BTH
+
   defp request(symbols) do
-    base_url = Application.get_env(:ticker, :iextrading_url)
+    base_url = Application.get_env(:ticker, :crypto_url)
     params = Enum.join(symbols, "%2C")
     url = "#{base_url}#{params}"
     HTTPoison.get(url)
@@ -35,7 +37,38 @@ defmodule Ticker.Quote.Processor.HTTP do
   end
 
   defp decode({:ok, body}) do
-    {:ok, Poison.decode!(body, as: [%Ticker.Quote{}])}
+    # {:ok, Poison.decode!(body, as: [%Ticker.Quote{}])}
+
+    # JSON Data from min-api.cryptocompare.com
+    #
+    #  {
+    #    RAW: {
+    #      BTC: {
+    #        USD: {...}
+    #      },
+    #      ETH: {
+    #        USD: {...}
+    #      }
+    #    },
+    #    DISPLAY: {
+    #      BTC: {
+    #        USD: {...}
+    #      }
+    #      ETH: {
+    #        USD: {...}
+    #      }
+    #    }
+    #  }
+    # 
+    # Get the keys for the RAW block which will be the Symbol list - discard DISPLAY
+    #   Map.keys(get_in(map2, ["RAW"]))
+    # Traverse the Symbol list and extract the USD block with is the actual Quote
+    #   get_in(map2, ["RAW", x, "USD"])
+
+    Enum.map(Map.keys(get_in(map2, ["RAW"])), fn(x) -> get_in(map2, ["RAW", x, "USD"]) end)
+
+    ## TODO - convert this list of Quote Maps to list of Quote Struct
+
   end
 
 end

@@ -35,3 +35,241 @@ Registry.match(:process_registry, {"Stock", "FB", :_}, :_)
 
 
  time_frame_pids = Registry.match(:process_registry, {Ticker.TimeFrame, @symbol, 1}, :_)
+
+
+
+ CryptoCompare API response decoding
+
+ HTTPoison.get("https://min-api.cryptocompare.com/data/pricemultifull?tsyms=USD&fsyms=BTC,ETH")
+
+{:ok, %HTTPoison.Response{status_code: 200, body: body}} -> {:ok, body}
+
+
+
+body = "{\"RAW\":{\"BTC\":{\"USD\":{\"TYPE\":\"5\",\"MARKET\":\"CCCAGG\",\"FROMSYMBOL\":\"BTC\",\"TOSYMBOL\":\"USD\",\"FLAGS\":\"4\",\"PRICE\":18691.57,\"LASTUPDATE\":1513666822,\"LASTVOLUME\":0.05,\"LASTVOLUMETO\":931.25,\"LASTTRADEID\":\"130478827\",\"VOLUMEDAY\":27152.117621646226,\"VOLUMEDAYTO\":511232545.21330565,\"VOLUME24HOUR\":104549.35766863906,\"VOLUME24HOURTO\":1960308322.427236,\"OPENDAY\":18971.19,\"HIGHDAY\":19021.97,\"LOWDAY\":18673.29,\"OPEN24HOUR\":18722.7,\"HIGH24HOUR\":19245.21,\"LOW24HOUR\":18211.12,\"LASTMARKET\":\"Bitfinex\",\"CHANGE24HOUR\":-31.13000000000102,\"CHANGEPCT24HOUR\":-0.166268753972456,\"CHANGEDAY\":-279.619999999999,\"CHANGEPCTDAY\":-1.4739191373867375,\"SUPPLY\":16751012,\"MKTCAP\":313102713368.83997,\"TOTALVOLUME24H\":282653.16881890653,\"TOTALVOLUME24HTO\":5289348175.809241}}},\"DISPLAY\":{\"BTC\":{\"USD\":{\"FROMSYMBOL\":\"Ƀ\",\"TOSYMBOL\":\"$\",\"MARKET\":\"CryptoCompare Index\",\"PRICE\":\"$ 18,691.6\",\"LASTUPDATE\":\"Just now\",\"LASTVOLUME\":\"Ƀ 0.05000\",\"LASTVOLUMETO\":\"$ 931.25\",\"LASTTRADEID\":\"130478827\",\"VOLUMEDAY\":\"Ƀ 27,152.1\",\"VOLUMEDAYTO\":\"$ 511,232,545.2\",\"VOLUME24HOUR\":\"Ƀ 104,549.4\",\"VOLUME24HOURTO\":\"$ 1,960,308,322.4\",\"OPENDAY\":\"$ 18,971.2\",\"HIGHDAY\":\"$ 19,022.0\",\"LOWDAY\":\"$ 18,673.3\",\"OPEN24HOUR\":\"$ 18,722.7\",\"HIGH24HOUR\":\"$ 19,245.2\",\"LOW24HOUR\":\"$ 18,211.1\",\"LASTMARKET\":\"Bitfinex\",\"CHANGE24HOUR\":\"$ -31.13\",\"CHANGEPCT24HOUR\":\"-0.17\",\"CHANGEDAY\":\"$ -279.62\",\"CHANGEPCTDAY\":\"-1.47\",\"SUPPLY\":\"Ƀ 16,751,012.0\",\"MKTCAP\":\"$ 313.10 B\",\"TOTALVOLUME24H\":\"Ƀ 282.65 K\",\"TOTALVOLUME24HTO\":\"$ 5,289.35 M\"}}}}"
+
+Poison.decode!(body)
+
+
+%{"DISPLAY" => %{"BTC" => %{"USD" => %{"CHANGE24HOUR" => "$ -31.13",
+        "CHANGEDAY" => "$ -279.62", "CHANGEPCT24HOUR" => "-0.17",
+        "CHANGEPCTDAY" => "-1.47", "FROMSYMBOL" => "Ƀ",
+        "HIGH24HOUR" => "$ 19,245.2", "HIGHDAY" => "$ 19,022.0",
+        "LASTMARKET" => "Bitfinex", "LASTTRADEID" => "130478827",
+        "LASTUPDATE" => "Just now", "LASTVOLUME" => "Ƀ 0.05000",
+        "LASTVOLUMETO" => "$ 931.25", "LOW24HOUR" => "$ 18,211.1",
+        "LOWDAY" => "$ 18,673.3", "MARKET" => "CryptoCompare Index",
+        "MKTCAP" => "$ 313.10 B", "OPEN24HOUR" => "$ 18,722.7",
+        "OPENDAY" => "$ 18,971.2", "PRICE" => "$ 18,691.6",
+        "SUPPLY" => "Ƀ 16,751,012.0", "TOSYMBOL" => "$",
+        "TOTALVOLUME24H" => "Ƀ 282.65 K", "TOTALVOLUME24HTO" => "$ 5,289.35 M",
+        "VOLUME24HOUR" => "Ƀ 104,549.4",
+        "VOLUME24HOURTO" => "$ 1,960,308,322.4", "VOLUMEDAY" => "Ƀ 27,152.1",
+        "VOLUMEDAYTO" => "$ 511,232,545.2"}}},
+  "RAW" => %{"BTC" => %{"USD" => %{
+        "CHANGE24HOUR" => -31.13000000000102,
+        "CHANGEDAY" => -279.619999999999,
+        "CHANGEPCT24HOUR" => -0.166268753972456,
+        "CHANGEPCTDAY" => -1.4739191373867375,
+        "FLAGS" => "4",
+        "FROMSYMBOL" => "BTC",
+        "HIGH24HOUR" => 19245.21,
+        "HIGHDAY" => 19021.97,
+        "LASTMARKET" => "Bitfinex",
+        "LASTTRADEID" => "130478827",
+        "LASTUPDATE" => 1513666822,
+        "LASTVOLUME" => 0.05,
+        "LASTVOLUMETO" => 931.25,
+        "LOW24HOUR" => 18211.12,
+        "LOWDAY" => 18673.29,
+        "MARKET" => "CCCAGG",
+        "MKTCAP" => 313102713368.83997,
+        "OPEN24HOUR" => 18722.7,
+        "OPENDAY" => 18971.19,
+        "PRICE" => 18691.57,
+        "SUPPLY" => 16751012,
+        "TOSYMBOL" => "USD",
+        "TOTALVOLUME24H" => 282653.16881890653,
+        "TOTALVOLUME24HTO" => 5289348175.809241,
+        "TYPE" => "5",
+        "VOLUME24HOUR" => 104549.35766863906,
+        "VOLUME24HOURTO" => 1960308322.427236,
+        "VOLUMEDAY" => 27152.117621646226,
+        "VOLUMEDAYTO" => 511232545.21330565}}}}
+
+
+
+map = %{"DISPLAY" => %{"BTC" => %{"USD" => %{"CHANGE24HOUR" => "$ -31.13",
+        "CHANGEDAY" => "$ -279.62", "CHANGEPCT24HOUR" => "-0.17",
+        "CHANGEPCTDAY" => "-1.47", "FROMSYMBOL" => "Ƀ",
+        "HIGH24HOUR" => "$ 19,245.2", "HIGHDAY" => "$ 19,022.0",
+        "LASTMARKET" => "Bitfinex", "LASTTRADEID" => "130478827",
+        "LASTUPDATE" => "Just now", "LASTVOLUME" => "Ƀ 0.05000",
+        "LASTVOLUMETO" => "$ 931.25", "LOW24HOUR" => "$ 18,211.1",
+        "LOWDAY" => "$ 18,673.3", "MARKET" => "CryptoCompare Index",
+        "MKTCAP" => "$ 313.10 B", "OPEN24HOUR" => "$ 18,722.7",
+        "OPENDAY" => "$ 18,971.2", "PRICE" => "$ 18,691.6",
+        "SUPPLY" => "Ƀ 16,751,012.0", "TOSYMBOL" => "$",
+        "TOTALVOLUME24H" => "Ƀ 282.65 K", "TOTALVOLUME24HTO" => "$ 5,289.35 M",
+        "VOLUME24HOUR" => "Ƀ 104,549.4",
+        "VOLUME24HOURTO" => "$ 1,960,308,322.4", "VOLUMEDAY" => "Ƀ 27,152.1",
+        "VOLUMEDAYTO" => "$ 511,232,545.2"}}},
+  "RAW" => %{"BTC" => %{"USD" => %{
+        "CHANGE24HOUR" => -31.13000000000102,
+        "CHANGEDAY" => -279.619999999999,
+        "CHANGEPCT24HOUR" => -0.166268753972456,
+        "CHANGEPCTDAY" => -1.4739191373867375,
+        "FLAGS" => "4",
+        "FROMSYMBOL" => "BTC",
+        "HIGH24HOUR" => 19245.21,
+        "HIGHDAY" => 19021.97,
+        "LASTMARKET" => "Bitfinex",
+        "LASTTRADEID" => "130478827",
+        "LASTUPDATE" => 1513666822,
+        "LASTVOLUME" => 0.05,
+        "LASTVOLUMETO" => 931.25,
+        "LOW24HOUR" => 18211.12,
+        "LOWDAY" => 18673.29,
+        "MARKET" => "CCCAGG",
+        "MKTCAP" => 313102713368.83997,
+        "OPEN24HOUR" => 18722.7,
+        "OPENDAY" => 18971.19,
+        "PRICE" => 18691.57,
+        "SUPPLY" => 16751012,
+        "TOSYMBOL" => "USD",
+        "TOTALVOLUME24H" => 282653.16881890653,
+        "TOTALVOLUME24HTO" => 5289348175.809241,
+        "TYPE" => "5",
+        "VOLUME24HOUR" => 104549.35766863906,
+        "VOLUME24HOURTO" => 1960308322.427236,
+        "VOLUMEDAY" => 27152.117621646226,
+        "VOLUMEDAYTO" => 511232545.21330565}}}}
+
+get_in(map, [Access.key(:FROMSYMBOL, %{})])
+
+get_in(map, ["FROMSYMBOL", :age])
+
+get_in(map, ["RAW", "BTC", "USD"])
+
+map[:RAW][:BTC][:USD]
+
+Map.get(map, "RAW")
+
+
+
+body3 = "{\"RAW\":{\"BTC\":{\"USD\":{\"TYPE\":\"5\",\"MARKET\":\"CCCAGG\",\"FROMSYMBOL\":\"BTC\",\"TOSYMBOL\":\"USD\",\"FLAGS\":\"1\",\"PRICE\":18757.25,\"LASTUPDATE\":1513669987,\"LASTVOLUME\":0.15206467,\"LASTVOLUMETO\":2839.0473889000004,\"LASTTRADEID\":\"130544684\",\"VOLUMEDAY\":30012.223102034684,\"VOLUMEDAYTO\":564885673.9236246,\"VOLUME24HOUR\":106803.24687958839,\"VOLUME24HOURTO\":2002549289.0293918,\"OPENDAY\":18971.19,\"HIGHDAY\":19021.97,\"LOWDAY\":18673.29,\"OPEN24HOUR\":18673.45,\"HIGH24HOUR\":19244.81,\"LOW24HOUR\":18210.76,\"LASTMARKET\":\"Bitfinex\",\"CHANGE24HOUR\":83.79999999999927,\"CHANGEPCT24HOUR\":0.4487654932537869,\"CHANGEDAY\":-213.9399999999987,\"CHANGEPCTDAY\":-1.1277099644249977,\"SUPPLY\":16751087,\"MKTCAP\":314204326630.75,\"TOTALVOLUME24H\":291313.3997551942,\"TOTALVOLUME24HTO\":5463452354.055348}},\"ETH\":{\"USD\":{\"TYPE\":\"5\",\"MARKET\":\"CCCAGG\",\"FROMSYMBOL\":\"ETH\",\"TOSYMBOL\":\"USD\",\"FLAGS\":\"4\",\"PRICE\":838.53,\"LASTUPDATE\":1513669986,\"LASTVOLUME\":4.53881667,\"LASTVOLUMETO\":3784.0114577790005,\"LASTTRADEID\":\"130544674\",\"VOLUMEDAY\":408965.2539891671,\"VOLUMEDAYTO\":331995539.6429825,\"VOLUME24HOUR\":1134050.25863123,\"VOLUME24HOURTO\":877407021.0689448,\"OPENDAY\":785.99,\"HIGHDAY\":840.85,\"LOWDAY\":767.59,\"OPEN24HOUR\":706.37,\"HIGH24HOUR\":841.83,\"LOW24HOUR\":705.64,\"LASTMARKET\":\"Bitfinex\",\"CHANGE24HOUR\":132.15999999999997,\"CHANGEPCT24HOUR\":18.709741353681494,\"CHANGEDAY\":52.539999999999964,\"CHANGEPCTDAY\":6.684563416837359,\"SUPPLY\":96431997.5928,\"MKTCAP\":80861122941.49059,\"TOTALVOLUME24H\":3228619.2475324995,\"TOTALVOLUME24HTO\":2633765955.3323264}}},\"DISPLAY\":{\"BTC\":{\"USD\":{\"FROMSYMBOL\":\"Ƀ\",\"TOSYMBOL\":\"$\",\"MARKET\":\"CryptoCompare Index\",\"PRICE\":\"$ 18,757.3\",\"LASTUPDATE\":\"Just now\",\"LASTVOLUME\":\"Ƀ 0.1521\",\"LASTVOLUMETO\":\"$ 2,839.05\",\"LASTTRADEID\":\"130544684\",\"VOLUMEDAY\":\"Ƀ 30,012.2\",\"VOLUMEDAYTO\":\"$ 564,885,673.9\",\"VOLUME24HOUR\":\"Ƀ 106,803.2\",\"VOLUME24HOURTO\":\"$ 2,002,549,289.0\",\"OPENDAY\":\"$ 18,971.2\",\"HIGHDAY\":\"$ 19,022.0\",\"LOWDAY\":\"$ 18,673.3\",\"OPEN24HOUR\":\"$ 18,673.5\",\"HIGH24HOUR\":\"$ 19,244.8\",\"LOW24HOUR\":\"$ 18,210.8\",\"LASTMARKET\":\"Bitfinex\",\"CHANGE24HOUR\":\"$ 83.80\",\"CHANGEPCT24HOUR\":\"0.45\",\"CHANGEDAY\":\"$ -213.94\",\"CHANGEPCTDAY\":\"-1.13\",\"SUPPLY\":\"Ƀ 16,751,087.0\",\"MKTCAP\":\"$ 314.20 B\",\"TOTALVOLUME24H\":\"Ƀ 291.31 K\",\"TOTALVOLUME24HTO\":\"$ 5,463.45 M\"}},\"ETH\":{\"USD\":{\"FROMSYMBOL\":\"Ξ\",\"TOSYMBOL\":\"$\",\"MARKET\":\"CryptoCompare Index\",\"PRICE\":\"$ 838.53\",\"LASTUPDATE\":\"Just now\",\"LASTVOLUME\":\"Ξ 4.54\",\"LASTVOLUMETO\":\"$ 3,784.01\",\"LASTTRADEID\":\"130544674\",\"VOLUMEDAY\":\"Ξ 408,965.3\",\"VOLUMEDAYTO\":\"$ 331,995,539.6\",\"VOLUME24HOUR\":\"Ξ 1,134,050.3\",\"VOLUME24HOURTO\":\"$ 877,407,021.1\",\"OPENDAY\":\"$ 785.99\",\"HIGHDAY\":\"$ 840.85\",\"LOWDAY\":\"$ 767.59\",\"OPEN24HOUR\":\"$ 706.37\",\"HIGH24HOUR\":\"$ 841.83\",\"LOW24HOUR\":\"$ 705.64\",\"LASTMARKET\":\"Bitfinex\",\"CHANGE24HOUR\":\"$ 132.16\",\"CHANGEPCT24HOUR\":\"18.71\",\"CHANGEDAY\":\"$ 52.54\",\"CHANGEPCTDAY\":\"6.68\",\"SUPPLY\":\"Ξ 96,431,997.6\",\"MKTCAP\":\"$ 80.86 B\",\"TOTALVOLUME24H\":\"Ξ 3,228.62 K\",\"TOTALVOLUME24HTO\":\"$ 2,633.77 M\"}}}}"
+
+
+
+Poison.decode!(body3)
+
+
+map2 = %{"DISPLAY" => %{"BTC" => %{"USD" => %{"CHANGE24HOUR" => "$ 83.80",
+        "CHANGEDAY" => "$ -213.94", "CHANGEPCT24HOUR" => "0.45",
+        "CHANGEPCTDAY" => "-1.13", "FROMSYMBOL" => "Ƀ",
+        "HIGH24HOUR" => "$ 19,244.8", "HIGHDAY" => "$ 19,022.0",
+        "LASTMARKET" => "Bitfinex", "LASTTRADEID" => "130544684",
+        "LASTUPDATE" => "Just now", "LASTVOLUME" => "Ƀ 0.1521",
+        "LASTVOLUMETO" => "$ 2,839.05", "LOW24HOUR" => "$ 18,210.8",
+        "LOWDAY" => "$ 18,673.3", "MARKET" => "CryptoCompare Index",
+        "MKTCAP" => "$ 314.20 B", "OPEN24HOUR" => "$ 18,673.5",
+        "OPENDAY" => "$ 18,971.2", "PRICE" => "$ 18,757.3",
+        "SUPPLY" => "Ƀ 16,751,087.0", "TOSYMBOL" => "$",
+        "TOTALVOLUME24H" => "Ƀ 291.31 K", "TOTALVOLUME24HTO" => "$ 5,463.45 M",
+        "VOLUME24HOUR" => "Ƀ 106,803.2",
+        "VOLUME24HOURTO" => "$ 2,002,549,289.0", "VOLUMEDAY" => "Ƀ 30,012.2",
+        "VOLUMEDAYTO" => "$ 564,885,673.9"}},
+    "ETH" => %{"USD" => %{"CHANGE24HOUR" => "$ 132.16",
+        "CHANGEDAY" => "$ 52.54", "CHANGEPCT24HOUR" => "18.71",
+        "CHANGEPCTDAY" => "6.68", "FROMSYMBOL" => "Ξ",
+        "HIGH24HOUR" => "$ 841.83", "HIGHDAY" => "$ 840.85",
+        "LASTMARKET" => "Bitfinex", "LASTTRADEID" => "130544674",
+        "LASTUPDATE" => "Just now", "LASTVOLUME" => "Ξ 4.54",
+        "LASTVOLUMETO" => "$ 3,784.01", "LOW24HOUR" => "$ 705.64",
+        "LOWDAY" => "$ 767.59", "MARKET" => "CryptoCompare Index",
+        "MKTCAP" => "$ 80.86 B", "OPEN24HOUR" => "$ 706.37",
+        "OPENDAY" => "$ 785.99", "PRICE" => "$ 838.53",
+        "SUPPLY" => "Ξ 96,431,997.6", "TOSYMBOL" => "$",
+        "TOTALVOLUME24H" => "Ξ 3,228.62 K",
+        "TOTALVOLUME24HTO" => "$ 2,633.77 M",
+        "VOLUME24HOUR" => "Ξ 1,134,050.3",
+        "VOLUME24HOURTO" => "$ 877,407,021.1", "VOLUMEDAY" => "Ξ 408,965.3",
+        "VOLUMEDAYTO" => "$ 331,995,539.6"}}},
+  "RAW" => %{"BTC" => %{"USD" => %{"CHANGE24HOUR" => 83.79999999999927,
+        "CHANGEDAY" => -213.9399999999987,
+        "CHANGEPCT24HOUR" => 0.4487654932537869,
+        "CHANGEPCTDAY" => -1.1277099644249977, "FLAGS" => "1",
+        "FROMSYMBOL" => "BTC", "HIGH24HOUR" => 19244.81, "HIGHDAY" => 19021.97,
+        "LASTMARKET" => "Bitfinex", "LASTTRADEID" => "130544684",
+        "LASTUPDATE" => 1513669987, "LASTVOLUME" => 0.15206467,
+        "LASTVOLUMETO" => 2839.0473889000004, "LOW24HOUR" => 18210.76,
+        "LOWDAY" => 18673.29, "MARKET" => "CCCAGG", "MKTCAP" => 314204326630.75,
+        "OPEN24HOUR" => 18673.45, "OPENDAY" => 18971.19, "PRICE" => 18757.25,
+        "SUPPLY" => 16751087, "TOSYMBOL" => "USD",
+        "TOTALVOLUME24H" => 291313.3997551942,
+        "TOTALVOLUME24HTO" => 5463452354.055348, "TYPE" => "5",
+        "VOLUME24HOUR" => 106803.24687958839,
+        "VOLUME24HOURTO" => 2002549289.0293918,
+        "VOLUMEDAY" => 30012.223102034684, "VOLUMEDAYTO" => 564885673.9236246}},
+    "ETH" => %{"USD" => %{"CHANGE24HOUR" => 132.15999999999997,
+        "CHANGEDAY" => 52.539999999999964,
+        "CHANGEPCT24HOUR" => 18.709741353681494,
+        "CHANGEPCTDAY" => 6.684563416837359, "FLAGS" => "4",
+        "FROMSYMBOL" => "ETH", "HIGH24HOUR" => 841.83, "HIGHDAY" => 840.85,
+        "LASTMARKET" => "Bitfinex", "LASTTRADEID" => "130544674",
+        "LASTUPDATE" => 1513669986, "LASTVOLUME" => 4.53881667,
+        "LASTVOLUMETO" => 3784.0114577790005, "LOW24HOUR" => 705.64,
+        "LOWDAY" => 767.59, "MARKET" => "CCCAGG", "MKTCAP" => 80861122941.49059,
+        "OPEN24HOUR" => 706.37, "OPENDAY" => 785.99, "PRICE" => 838.53,
+        "SUPPLY" => 96431997.5928, "TOSYMBOL" => "USD",
+        "TOTALVOLUME24H" => 3228619.2475324995,
+        "TOTALVOLUME24HTO" => 2633765955.3323264, "TYPE" => "5",
+        "VOLUME24HOUR" => 1134050.25863123,
+        "VOLUME24HOURTO" => 877407021.0689448, "VOLUMEDAY" => 408965.2539891671,
+        "VOLUMEDAYTO" => 331995539.6429825}}}}
+
+get_in(map2, ["RAW"])
+
+Map.take(map2, ["RAW", "BTC", "USD"])
+
+
+Map.take(map2, ["RAW"]) |> Map.take(["BTC"])
+
+get_in(map2, ["RAW", "BTC", "USD"])
+
+
+Map.keys(get_in(map2, ["RAW"]))
+
+
+Enum.map(Map.keys(get_in(map2, ["RAW"])), fn(symbol) -> get_in(map2, ["RAW", symbol, "USD"]) end)
+
+# JSON Data from min-api.cryptocompare.com
+#
+#  {
+#    RAW: {
+#      BTC: {
+#        USD: {...}
+#      },
+#      ETH: {
+#        USD: {...}
+#      }
+#    },
+#    DISPLAY: {
+#      BTC: {
+#        USD: {...}
+#      }
+#      ETH: {
+#        USD: {...}
+#      }
+#    }
+#  }
+# 
+# Get the keys for the RAW block which will be the Symbol list
+#   Map.keys(get_in(map2, ["RAW"]))
+# Traverse the Symbol list and extract the USD block with is the actual Quote
+
+Enum.map(Map.keys(get_in(map2, ["RAW"])), fn(symbol) -> get_in(map2, ["RAW", symbol, "USD"]) end)
+
+Enum.map(Map.keys(get_in(map, ["RAW"])), fn(symbol) -> get_in(map, ["RAW", symbol, "USD"]) end)
+
+

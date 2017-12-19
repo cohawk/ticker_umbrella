@@ -24,13 +24,13 @@ defmodule Ticker.Quote.Processor.Simulate do
   end
 
   @doc "Process the given symbols (@see Ticker.Quote.Processor.Behaviour.process}. Used for simulating quotes"
-  def process(symbols) do
-    quotes = process(symbols, Timex.now)
+  def process(symbols, _) do
+    quotes = process_simulate(symbols, Timex.now)
     {:ok, quotes}
   end
 
   @doc "Simulated historical quotes (@see Ticker.Quote.Processor.Behaviour.historical)"
-  def historical(symbols) do
+  def historical(symbols, _) do
     dt = Timex.shift(Timex.now, hours: -@historical_hours)
     quotes = Interval.new(from: dt, until: [hours: @historical_hours], step: [minutes: 1])
       |> Enum.map(fn(i) -> Enum.map(1..@ticks_per_minute, fn(_) -> process(symbols, i) end) end)
@@ -38,7 +38,7 @@ defmodule Ticker.Quote.Processor.Simulate do
     {:ok, quotes}
   end
 
-  defp process(symbols, date_time) do
+  defp process_simulate(symbols, date_time) do
     current_quote = get_quote()
     current_quote
       |> move_quote(date_time)

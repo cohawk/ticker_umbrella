@@ -8,11 +8,11 @@ defmodule Ticker.Quote.Processor.Behaviour do
   @doc """
   process the given quotes
   """
-  @callback process(symbols :: list) :: {:ok, [%Ticker.Quote{}]} | {:error, String.t}
+  @callback process(symbols :: list, is_crypto :: boolean) :: {:ok, [%Ticker.Quote{}]} | {:error, String.t}
 
   @doc """
   build historical for given symbols
   """
-  @callback historical(symbols :: list) :: {:ok, [%Ticker.Quote{}]} | {:error, String.t}
+  @callback historical(symbols :: list, is_crypto :: boolean) :: {:ok, [%Ticker.Quote{}]} | {:error, String.t}
 
 end

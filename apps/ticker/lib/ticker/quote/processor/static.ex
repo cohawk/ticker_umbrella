@@ -16,12 +16,12 @@ defmodule Ticker.Quote.Processor.Static do
   }
 
   @doc "Process the given symbols (@see Ticker.Quote.Processor.Behaviour.process). Used for testing"
-  def process(symbols) do
+  def process(symbols, _) do
     fake_quotes(symbols)
   end
 
   @doc "Process historical here (@see Ticker.Quote.Processor.Behaviour.historical). Used for testing"
-  def historical(symbols) do
+  def historical(symbols, _) do
     fake_quotes(symbols)
   end
 

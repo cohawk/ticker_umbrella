@@ -103,4 +103,23 @@ defmodule Ticker.Quote do
     String.to_float(value)
   end
 
+  # TODO - needs multiple API calls to pull Order Data: bidSize, bidPrice, askSize, askPrice
+  # https://bitcoin.stackexchange.com/questions/28265/how-is-bid-and-ask-calculated-for-crypto-currencies
+  def from_crypto(ticker_quote) do
+    %Ticker.Quote{
+      symbol:         Map.get(ticker_quote, "FROMSYMBOL"),
+      marketPercent:  Map.get(ticker_quote, "LASTVOLUME"),
+      bidSize:        Map.get(ticker_quote, "LASTVOLUMETO"),
+      bidPrice:       Map.get(ticker_quote, "PRICE"),
+      askSize:        Map.get(ticker_quote, "LASTVOLUMETO"),
+      askPrice:       Map.get(ticker_quote, "PRICE"),
+      volume:         Map.get(ticker_quote, "SUPPLY"),
+      lastSalePrice:  Map.get(ticker_quote, "PRICE"),
+      lastSaleSize:   Map.get(ticker_quote, "LASTVOLUMETO"),
+      lastSaleTime:   Map.get(ticker_quote, "LASTTRADEID"),
+      lastUpdated:    Map.get(ticker_quote, "LASTUPDATE"),
+      lastReqTime:    ticker_quote.lastReqTime
+    }
+  end
+
 end

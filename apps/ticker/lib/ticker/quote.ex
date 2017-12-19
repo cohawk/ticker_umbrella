@@ -113,12 +113,12 @@ defmodule Ticker.Quote do
       bidPrice:       Map.get(ticker_quote, "PRICE"),
       askSize:        Map.get(ticker_quote, "LASTVOLUMETO"),
       askPrice:       Map.get(ticker_quote, "PRICE"),
-      volume:         Map.get(ticker_quote, "SUPPLY"),
+      volume:         Map.get(ticker_quote, "VOLUMEDAY"),
       lastSalePrice:  Map.get(ticker_quote, "PRICE"),
       lastSaleSize:   Map.get(ticker_quote, "LASTVOLUMETO"),
       lastSaleTime:   Map.get(ticker_quote, "LASTTRADEID"),
       lastUpdated:    Map.get(ticker_quote, "LASTUPDATE"),
-      lastReqTime:    ticker_quote.lastReqTime
+      lastReqTime:    nil
     }
   end
 

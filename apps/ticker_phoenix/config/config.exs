@@ -33,7 +33,7 @@ config :ticker,
   historical: false,
   security_symbols: ["TSLA", "GOOG", "AAPL", "TWTR", "FB", "GLD"],
   security_url: "https://api.iextrading.com/1.0/tops?symbols=",
-  crypto_symbols: ["BTC", "ETH", "LTC", "XRP", "BTH"],
+  crypto_symbols: ["BTC", "ETH", "LTC", "XRP", "BCH"],
   crypto_url: "https://min-api.cryptocompare.com/data/pricemultifull?tsyms=USD&fsyms=",
   quote_notify: [notify_module: TickerPhoenix.Listener, notify_fn: :notify_quotes],
   frame_notify: [notify_module: TickerPhoenix.Listener, notify_fn: :notify_frame]

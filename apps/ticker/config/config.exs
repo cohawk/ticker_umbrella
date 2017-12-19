@@ -25,8 +25,10 @@ config :ticker,
   frequency: 15_000,
   processor: Ticker.Quote.Processor.HTTP,
   historical: false,
-  symbols: ["TSLA", "GOOG", "AAPL", "TWTR", "FB", "MMM", "GLD", "VOO"],
-  url: "https://api.iextrading.com/1.0/tops?symbols=",
+  security_symbols: ["TSLA", "GOOG", "AAPL", "TWTR", "FB", "GLD"],
+  iextrading_url: "https://api.iextrading.com/1.0/tops?symbols=",
+  crypto_symbols: ["BTC"],
+  crypto_url: "https://www.alphavantage.co/query?function=DIGITAL_CURRENCY_INTRADAY&market=EUR&apikey=BMJUV89AV3WCXFWU&symbol=BTC",
   quote_notify: [notify_module: :none, notify_fn: :none]
 
 # It is also possible to import configuration files, relative to this

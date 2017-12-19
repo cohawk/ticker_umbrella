@@ -29,10 +29,12 @@ config :ticker_phoenix, :generators,
 # Configure Ticker
 config :ticker,
   frequency: 15_000,
-  processor: Ticker.Quote.Processor.Simulate,
-  historical: true,
-  symbols: ["TSLA", "GOOG", "AAPL", "TWTR", "FB", "MMM", "GLD", "VOO"],
-  url: "https://api.iextrading.com/1.0/tops?symbols=",
+  processor: Ticker.Quote.Processor.HTTP,
+  historical: false,
+  security_symbols: ["TSLA", "GOOG", "AAPL", "TWTR", "FB", "GLD"],
+  security_url: "https://api.iextrading.com/1.0/tops?symbols=",
+  crypto_symbols: ["BTC"],
+  crypto_url: "https://www.alphavantage.co/query?function=DIGITAL_CURRENCY_INTRADAY&market=EUR&apikey=BMJUV89AV3WCXFWU&symbol=BTC",
   quote_notify: [notify_module: TickerPhoenix.Listener, notify_fn: :notify_quotes],
   frame_notify: [notify_module: TickerPhoenix.Listener, notify_fn: :notify_frame]
 

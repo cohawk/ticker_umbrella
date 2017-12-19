@@ -42,6 +42,9 @@ defmodule TickerPhoenix.Mixfile do
       {:gettext, "~> 0.11"},
       {:cowboy, "~> 1.0"},
       {:corsica, "~> 1.1"},
+
+      {:crypto_compare, "~> 0.1.0"},
+      
       {:ticker, in_umbrella: true}
     ]
   end

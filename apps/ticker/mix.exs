@@ -33,10 +33,10 @@ defmodule Ticker.Mixfile do
       # {:dep_from_git, git: "https://github.com/elixir-lang/my_dep.git", tag: "0.1.0"},
       # {:sibling_app_in_umbrella, in_umbrella: true},
 
-      # {:timex, "~> 3.1"},
-      {:timex, git: "https://github.com/cohawk/timex.git"},
+      {:timex, "~> 3.1"},
+      # {:timex, git: "https://github.com/cohawk/timex.git"},
       {:poison, "~> 3.1"},
-      {:httpoison, "~> 0.11.0"},
+      {:httpoison, "~> 0.13.0"},
       {:excoveralls, "~> 0.5", only: :test},
       {:mock, "~> 0.2.0", only: :test}
     ]

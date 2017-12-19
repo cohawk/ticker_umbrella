@@ -36,7 +36,7 @@ defmodule Ticker.Quote.Processor do
   end
 
   defp collect_symbols do
-    symbols = Application.get_env(:ticker, :symbols)
+    symbols = Application.get_env(:ticker, :security_symbols)
     Enum.map(symbols, fn(name) -> Ticker.Symbol.get_symbol(name) end)
 
     # Cannot wildcard :unique Registry key - https://github.com/elixir-lang/elixir/issues/6602

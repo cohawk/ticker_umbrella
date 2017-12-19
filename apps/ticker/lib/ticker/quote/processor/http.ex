@@ -24,7 +24,7 @@ defmodule Ticker.Quote.Processor.HTTP do
   end
 
   defp request(symbols) do
-    base_url = Application.get_env(:ticker, :url)
+    base_url = Application.get_env(:ticker, :iextrading_url)
     params = Enum.join(symbols, "%2C")
     url = "#{base_url}#{params}"
     HTTPoison.get(url)

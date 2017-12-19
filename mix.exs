@@ -19,6 +19,8 @@ defmodule TickerUmbrella.Mixfile do
     []
   end
 
+  # iex -S mix phoenix.server
+
   defp aliases do
     [
       "s": ["phx.server"]

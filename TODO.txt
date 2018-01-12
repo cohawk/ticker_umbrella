@@ -1,5 +1,39 @@
 
 
+Ticker Data API (config.exs)
+
+Currently Using:
+
+Stock
+
+    iextrading_url: "https://api.iextrading.com/1.0/tops?symbols="
+
+    https://iextrading.com/
+
+Crypto
+
+    crypto_url: "https://min-api.cryptocompare.com/data/pricemultifull?tsyms=USD&fsyms="
+
+    https://www.cryptocompare.com/
+
+
+
+
+Most used Crypo API
+
+https://coinmarketcap.com/api/ (may require PAID usage soon)
+
+
+
+https://www.alphavantage.co/
+
+Welcome to Alpha Vantage! Here is your API key: BMJUV89AV3WCXFWU. Please record this API key for lifetime access to Alpha Vantage.
+
+
+
+
+
+
 
 Phx 1.3
 
@@ -9,14 +43,8 @@ mix phx.new.web ticker_phoenix --no-brunch --no-html --umbrella
 
 
 
-Stock Data API
 
-https://www.alphavantage.co/
-
-Welcome to Alpha Vantage! Here is your API key: BMJUV89AV3WCXFWU. Please record this API key for lifetime access to Alpha Vantage.
-
-
-
+NOTES
 
 
 

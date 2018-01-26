@@ -69,33 +69,35 @@ defmodule Ticker.Quote do
   def is_a_quote?(_), do: false
 
   def as_type(ticker_quote, type \\ :string) do
-    type_fn = case type do
-      :string -> fn(value, sign, precision) -> as_string(value, sign, precision) end
-      _       -> fn(value, _, _) -> as_float(value) end
-    end
+    type_fn =
+      case type do
+        :string -> fn value, sign, precision -> as_string(value, sign, precision) end
+        _ -> fn value, _, _ -> as_float(value) end
+      end
 
     %Ticker.Quote{
-      symbol:         ticker_quote.symbol,
-      marketPercent:  type_fn.(ticker_quote.marketPercent, false, 5),
-      bidSize:        ticker_quote.bidSize,
-      bidPrice:       type_fn.(ticker_quote.bidPrice, false, 3),
-      askSize:        ticker_quote.askSize,
-      askPrice:       type_fn.(ticker_quote.askPrice, false, 3),
-      volume:         ticker_quote.volume,
-      lastSalePrice:  type_fn.(ticker_quote.lastSalePrice, false, 3),
-      lastSaleSize:   ticker_quote.lastSaleSize,
-      lastSaleTime:   ticker_quote.lastSaleTime,
-      lastUpdated:    ticker_quote.lastUpdated,
-      lastReqTime:    ticker_quote.lastReqTime
+      symbol: ticker_quote.symbol,
+      marketPercent: type_fn.(ticker_quote.marketPercent, false, 5),
+      bidSize: ticker_quote.bidSize,
+      bidPrice: type_fn.(ticker_quote.bidPrice, false, 3),
+      askSize: ticker_quote.askSize,
+      askPrice: type_fn.(ticker_quote.askPrice, false, 3),
+      volume: ticker_quote.volume,
+      lastSalePrice: type_fn.(ticker_quote.lastSalePrice, false, 3),
+      lastSaleSize: ticker_quote.lastSaleSize,
+      lastSaleTime: ticker_quote.lastSaleTime,
+      lastUpdated: ticker_quote.lastUpdated,
+      lastReqTime: ticker_quote.lastReqTime
     }
-
   end
 
   defp as_string(value, sign, precision) do
-    pre = case sign do
-      true when value > 0 -> "+"
-      _ -> nil
-    end
+    pre =
+      case sign do
+        true when value > 0 -> "+"
+        _ -> nil
+      end
+
     ~s(#{pre}#{:erlang.float_to_binary(value, decimals: precision)})
   end
 
@@ -107,19 +109,18 @@ defmodule Ticker.Quote do
   # https://bitcoin.stackexchange.com/questions/28265/how-is-bid-and-ask-calculated-for-crypto-currencies
   def from_crypto(ticker_quote) do
     %Ticker.Quote{
-      symbol:         Map.get(ticker_quote, "FROMSYMBOL"),
-      marketPercent:  Map.get(ticker_quote, "LASTVOLUME"),
-      bidSize:        Map.get(ticker_quote, "LASTVOLUMETO"),
-      bidPrice:       Map.get(ticker_quote, "PRICE"),
-      askSize:        Map.get(ticker_quote, "LASTVOLUMETO"),
-      askPrice:       Map.get(ticker_quote, "PRICE"),
-      volume:         Map.get(ticker_quote, "VOLUMEDAY"),
-      lastSalePrice:  Map.get(ticker_quote, "PRICE"),
-      lastSaleSize:   Map.get(ticker_quote, "LASTVOLUMETO"),
-      lastSaleTime:   Map.get(ticker_quote, "LASTTRADEID"),
-      lastUpdated:    Map.get(ticker_quote, "LASTUPDATE"),
-      lastReqTime:    nil
+      symbol: Map.get(ticker_quote, "FROMSYMBOL"),
+      marketPercent: Map.get(ticker_quote, "LASTVOLUME"),
+      bidSize: Map.get(ticker_quote, "LASTVOLUMETO"),
+      bidPrice: Map.get(ticker_quote, "PRICE"),
+      askSize: Map.get(ticker_quote, "LASTVOLUMETO"),
+      askPrice: Map.get(ticker_quote, "PRICE"),
+      volume: Map.get(ticker_quote, "VOLUMEDAY"),
+      lastSalePrice: Map.get(ticker_quote, "PRICE"),
+      lastSaleSize: Map.get(ticker_quote, "LASTVOLUMETO"),
+      lastSaleTime: Map.get(ticker_quote, "LASTTRADEID"),
+      lastUpdated: Map.get(ticker_quote, "LASTUPDATE"),
+      lastReqTime: nil
     }
   end
-
 end

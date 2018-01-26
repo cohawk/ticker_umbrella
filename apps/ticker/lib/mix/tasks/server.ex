@@ -1,7 +1,6 @@
 require Logger
 
 defmodule Mix.Tasks.Ticker.Server do
-
   use Mix.Task
 
   @shortdoc "Start Ticker Server"
@@ -16,7 +15,7 @@ defmodule Mix.Tasks.Ticker.Server do
   """
   def run(args) do
     Logger.info("Starting Ticker Server...")
-    Mix.Task.run "run", run_args() ++ args
+    Mix.Task.run("run", run_args() ++ args)
   end
 
   defp run_args do
@@ -24,7 +23,6 @@ defmodule Mix.Tasks.Ticker.Server do
   end
 
   defp iex_running? do
-    Code.ensure_loaded?(IEx) and IEx.started?
+    Code.ensure_loaded?(IEx) and IEx.started?()
   end
-
 end

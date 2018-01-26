@@ -2,18 +2,48 @@ defmodule Ticker.Symbol.Test do
   use ExUnit.Case, async: true
 
   @symbol "TSLA"
-  @quote_start_minute %Ticker.Quote{symbol: @symbol, marketPercent: "0.01024", bidSize: 100,
-      bidPrice: "201.90", askSize: 100, askPrice: "202.10", volume: 33621,
-      lastSalePrice: "200.12", lastSaleSize: 25,
-      lastSaleTime: 1477050375000, lastUpdated: 1477050375000, lastReqTime: 1477050375000}
-  @quote_same_minute_1 %Ticker.Quote{symbol: @symbol, marketPercent: "0.01024", bidSize: 100,
-      bidPrice: "201.90", askSize: 100, askPrice: "202.10", volume: 33621,
-      lastSalePrice: "200.12", lastSaleSize: 25,
-      lastSaleTime: 1477050435000, lastUpdated: 1477050435000, lastReqTime: 1477050435000}
-  @quote_same_minute_2 %Ticker.Quote{symbol: @symbol, marketPercent: "0.01024", bidSize: 100,
-      bidPrice: "201.90", askSize: 100, askPrice: "202.10", volume: 33621,
-      lastSalePrice: "200.12", lastSaleSize: 25,
-      lastSaleTime: 1477050440000, lastUpdated: 1477050440000, lastReqTime: 1477050440000}
+  @quote_start_minute %Ticker.Quote{
+    symbol: @symbol,
+    marketPercent: "0.01024",
+    bidSize: 100,
+    bidPrice: "201.90",
+    askSize: 100,
+    askPrice: "202.10",
+    volume: 33621,
+    lastSalePrice: "200.12",
+    lastSaleSize: 25,
+    lastSaleTime: 1_477_050_375_000,
+    lastUpdated: 1_477_050_375_000,
+    lastReqTime: 1_477_050_375_000
+  }
+  @quote_same_minute_1 %Ticker.Quote{
+    symbol: @symbol,
+    marketPercent: "0.01024",
+    bidSize: 100,
+    bidPrice: "201.90",
+    askSize: 100,
+    askPrice: "202.10",
+    volume: 33621,
+    lastSalePrice: "200.12",
+    lastSaleSize: 25,
+    lastSaleTime: 1_477_050_435_000,
+    lastUpdated: 1_477_050_435_000,
+    lastReqTime: 1_477_050_435_000
+  }
+  @quote_same_minute_2 %Ticker.Quote{
+    symbol: @symbol,
+    marketPercent: "0.01024",
+    bidSize: 100,
+    bidPrice: "201.90",
+    askSize: 100,
+    askPrice: "202.10",
+    volume: 33621,
+    lastSalePrice: "200.12",
+    lastSaleSize: 25,
+    lastSaleTime: 1_477_050_440_000,
+    lastUpdated: 1_477_050_440_000,
+    lastReqTime: 1_477_050_440_000
+  }
 
   setup_all do
     {:ok, _} = Registry.start_link(:unique, :process_registry)
@@ -27,10 +57,12 @@ defmodule Ticker.Symbol.Test do
     {:ok, _} = Ticker.Symbol.Supervisor.start_link(@symbol)
     [{symbol_pid, _} | _] = Registry.match(:process_registry, {Ticker.Symbol, @symbol}, :_)
     assert is_pid(symbol_pid)
-    [{time_frame_pid, _} | _] = Registry.match(:process_registry, {Ticker.TimeFrame.Supervisor, @symbol}, :_)
+
+    [{time_frame_pid, _} | _] =
+      Registry.match(:process_registry, {Ticker.TimeFrame.Supervisor, @symbol}, :_)
+
     assert is_pid(time_frame_pid)
   end
-
 
   #####
   # Symbol Client Interface
@@ -65,7 +97,6 @@ defmodule Ticker.Symbol.Test do
     test_quote = Ticker.Symbol.get_quote(@symbol)
     assert test_quote == @quote_start_minute
   end
-
 
   #####
   # Symbol Server Interface
@@ -102,20 +133,39 @@ defmodule Ticker.Symbol.Test do
   test "add quote" do
     state = %{:symbol => @symbol, :quote => %Ticker.Quote{}, :quotes => [], :minute => nil}
     {:noreply, finalstate} = Ticker.Symbol.handle_cast({:add_quote, @quote_same_minute_1}, state)
-    assert finalstate == %{:symbol => @symbol, :quote => @quote_same_minute_1, :quotes => [@quote_same_minute_1], :minute => 47}
+
+    assert finalstate == %{
+             :symbol => @symbol,
+             :quote => @quote_same_minute_1,
+             :quotes => [@quote_same_minute_1],
+             :minute => 47
+           }
   end
 
   test "add 2 quotes" do
     state = %{:symbol => @symbol, :quote => %Ticker.Quote{}, :quotes => [], :minute => nil}
     {:noreply, newstate} = Ticker.Symbol.handle_cast({:add_quote, @quote_same_minute_1}, state)
-    {:noreply, finalstate} = Ticker.Symbol.handle_cast({:add_quote, @quote_same_minute_2}, newstate)
-    assert finalstate == %{:symbol => @symbol, :quote => @quote_same_minute_2, :quotes => [@quote_same_minute_2, @quote_same_minute_1], :minute => 47}
+
+    {:noreply, finalstate} =
+      Ticker.Symbol.handle_cast({:add_quote, @quote_same_minute_2}, newstate)
+
+    assert finalstate == %{
+             :symbol => @symbol,
+             :quote => @quote_same_minute_2,
+             :quotes => [@quote_same_minute_2, @quote_same_minute_1],
+             :minute => 47
+           }
   end
 
   test "add quote to next minute" do
     state = %{:symbol => @symbol, :quote => @quote_start_minute, :quotes => [], :minute => 46}
     {:noreply, finalstate} = Ticker.Symbol.handle_cast({:add_quote, @quote_same_minute_1}, state)
-    assert finalstate == %{:symbol => @symbol, :quote => @quote_same_minute_1, :quotes => [@quote_same_minute_1], :minute => 47}
-  end
 
+    assert finalstate == %{
+             :symbol => @symbol,
+             :quote => @quote_same_minute_1,
+             :quotes => [@quote_same_minute_1],
+             :minute => 47
+           }
+  end
 end

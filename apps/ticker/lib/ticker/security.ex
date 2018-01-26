@@ -20,7 +20,7 @@ defmodule Ticker.Security.Supervisor do
   end
 
   def add_securites(symbols) do
-    Enum.each(symbols, fn(s) -> add_security(s) end)
+    Enum.each(symbols, fn s -> add_security(s) end)
   end
 
   defp add_config_securites do
@@ -28,14 +28,13 @@ defmodule Ticker.Security.Supervisor do
     add_securites(symbols)
   end
 
-
   ## Server callbacks
 
   def init(:ok) do
     children = [
       supervisor(Ticker.Symbol.Supervisor, [], restart: :transient)
     ]
+
     supervise(children, strategy: :simple_one_for_one)
   end
-
 end

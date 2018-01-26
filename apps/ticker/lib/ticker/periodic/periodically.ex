@@ -16,7 +16,8 @@ defmodule Ticker.Periodic.Periodically do
 
   def handle_info({:work, work_fn, interval, startup}, state) do
     work_fn.(startup)
-    schedule_work(work_fn, interval, false) # Reschedule work
+    # Reschedule work
+    schedule_work(work_fn, interval, false)
     {:noreply, state}
   end
 
@@ -27,5 +28,4 @@ defmodule Ticker.Periodic.Periodically do
   defp schedule_work(work_fn, interval, _) do
     Process.send_after(self(), {:work, work_fn, interval, false}, interval)
   end
-
 end

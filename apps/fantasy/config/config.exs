@@ -10,26 +10,25 @@ use Mix.Config
 
 # You can configure your application as:
 #
-#     config :ticker, key: :value
+#     config :fantasy, key: :value
 #
 # and access this configuration in your application as:
 #
-#     Application.get_env(:ticker, :key)
+#     Application.get_env(:fantasy, :key)
 #
 # You can also configure a 3rd-party app:
 #
 #     config :logger, level: :info
 #
 
-config :ticker,
-  frequency: 15_000,
-  processor: Ticker.Quote.Processor.HTTP,
-  historical: false,
-  security_symbols: ["TSLA", "GOOG", "AAPL", "TWTR", "FB", "GLD"],
-  iextrading_url: "https://api.iextrading.com/1.0/tops?symbols=",
-  crypto_symbols: ["BTC", "ETH", "LTC", "XRP", "BCH"],
-  crypto_url: "https://min-api.cryptocompare.com/data/pricemultifull?tsyms=USD&fsyms=",
-  quote_notify: [notify_module: :none, notify_fn: :none]
+config :fantasy,
+  ga_tracking_code: "",
+  # Number of bytes for generic unique id
+  id_length: 8,
+  # Number of words used in game ids "ahoy-matey"
+  id_words: 2,
+  # Maximal number >= 100 after the words "ahoey-matey-9999".
+  id_number_max: 9999
 
 # It is also possible to import configuration files, relative to this
 # directory. For example, you can emulate configuration per environment

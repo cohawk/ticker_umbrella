@@ -20,7 +20,7 @@ defmodule Ticker.Crypto.Supervisor do
   end
 
   def add_cryptos(symbols) do
-    Enum.each(symbols, fn(s) -> add_crypto(s) end)
+    Enum.each(symbols, fn s -> add_crypto(s) end)
   end
 
   defp add_config_cryptos do
@@ -28,14 +28,13 @@ defmodule Ticker.Crypto.Supervisor do
     add_cryptos(symbols)
   end
 
-
   ## Server callbacks
 
   def init(:ok) do
     children = [
       supervisor(Ticker.Symbol.Supervisor, [], restart: :transient)
     ]
+
     supervise(children, strategy: :simple_one_for_one)
   end
-
 end

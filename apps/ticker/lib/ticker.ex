@@ -2,7 +2,7 @@ defmodule Ticker do
   @moduledoc """
   Documentation for Ticker OTP Application
   """
-  
+
   require Logger
 
   @doc false
@@ -24,13 +24,17 @@ defmodule Ticker do
     # TODO: Would be nice to start this in another place. Really shouldn't have to
     # know the processor at this point.
     processor = Application.get_env(:ticker, :processor)
-    children = case processor do
-      Ticker.Quote.Processor.Simulate -> [worker(Ticker.Quote.Processor.Simulate, []) | children]
-      _ -> children
-    end
+
+    children =
+      case processor do
+        Ticker.Quote.Processor.Simulate ->
+          [worker(Ticker.Quote.Processor.Simulate, []) | children]
+
+        _ ->
+          children
+      end
 
     opts = [strategy: :one_for_one, name: Ticker.Supervisor]
     Supervisor.start_link(children, opts)
   end
-
 end

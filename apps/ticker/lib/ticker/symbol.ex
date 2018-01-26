@@ -40,7 +40,6 @@ defmodule Ticker.Symbol do
     {:via, Registry, {:process_registry, {__MODULE__, name}}}
   end
 
-
   ## Server callbacks
 
   def init({:ok, name}) do
@@ -56,24 +55,30 @@ defmodule Ticker.Symbol do
   end
 
   def handle_cast({:add_quote, quote}, state) do
-    {quotes, minute} = case set_quotes(quote, state[:minute]) do
-      {:update, m} -> {[quote | state[:quotes]], m}
-      {_, m} ->
-        TimeFrame.rollup_quotes(quote.symbol, Enum.reverse(state[:quotes])) # New minute -- rollup previous minute
-        {[quote], m}
-    end
-    {:noreply,  %{:symbol => state[:symbol], :quote => quote, :quotes => quotes, :minute => minute}}
+    {quotes, minute} =
+      case set_quotes(quote, state[:minute]) do
+        {:update, m} ->
+          {[quote | state[:quotes]], m}
+
+        {_, m} ->
+          # New minute -- rollup previous minute
+          TimeFrame.rollup_quotes(quote.symbol, Enum.reverse(state[:quotes]))
+          {[quote], m}
+      end
+
+    {:noreply,
+     %{:symbol => state[:symbol], :quote => quote, :quotes => quotes, :minute => minute}}
   end
 
   defp set_quotes(quote, minute) do
     quote_time = Timex.from_unix(quote.lastReqTime, :millisecond)
+
     cond do
       minute == nil -> {:update, quote_time.minute}
       quote_time.minute != minute -> {:reset, quote_time.minute}
       true -> {:update, minute}
     end
   end
-
 end
 
 defmodule Ticker.Symbol.Supervisor do
@@ -88,7 +93,6 @@ defmodule Ticker.Symbol.Supervisor do
     {:via, Registry, {:process_registry, {__MODULE__, name}}}
   end
 
-
   ## Server callbacks
 
   def init({:ok, name}) do
@@ -96,7 +100,7 @@ defmodule Ticker.Symbol.Supervisor do
       supervisor(Ticker.TimeFrame.Supervisor, [name]),
       worker(Ticker.Symbol, [name])
     ]
+
     supervise(children, strategy: :one_for_one)
   end
-
 end

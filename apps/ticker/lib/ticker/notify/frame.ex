@@ -14,7 +14,6 @@ defmodule Ticker.Notify.Frame do
     GenServer.cast(__MODULE__, {:notify, frame})
   end
 
-
   ## Server callbacks
 
   def init(:ok) do
@@ -23,9 +22,14 @@ defmodule Ticker.Notify.Frame do
 
   def handle_cast({:notify, frame}, state) do
     frame_conf = Application.get_env(:ticker, :frame_notify)
+
     case frame_conf[:notify_module] do
-      nil -> :empty
-      :none -> :empty
+      nil ->
+        :empty
+
+      :none ->
+        :empty
+
       _ ->
         case frame_conf[:notify_fn] do
           nil -> :empty
@@ -33,7 +37,7 @@ defmodule Ticker.Notify.Frame do
           _ -> apply(frame_conf[:notify_module], frame_conf[:notify_fn], [frame])
         end
     end
-    {:noreply,  state}
-  end
 
+    {:noreply, state}
+  end
 end

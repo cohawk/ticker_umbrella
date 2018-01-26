@@ -12,12 +12,12 @@ defmodule Ticker.Security.Supervisor.Test do
   test "init no symbols" do
     {:ok, security_pid} = Ticker.Security.Supervisor.start_link(true)
     assert is_pid(security_pid)
-    
+
     GenServer.stop(security_pid)
   end
 
   test "init symbols" do
-    {:ok, security_pid} = Ticker.Security.Supervisor.start_link
+    {:ok, security_pid} = Ticker.Security.Supervisor.start_link()
     assert is_pid(security_pid)
 
     tsla_pid = Ticker.Symbol.get_pid("TSLA")
@@ -28,5 +28,4 @@ defmodule Ticker.Security.Supervisor.Test do
 
     GenServer.stop(security_pid)
   end
-
 end

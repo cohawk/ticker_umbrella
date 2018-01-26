@@ -1,7 +1,6 @@
 require Logger
 
 defmodule Ticker.Quote.Processor do
-
   alias Ticker.Quote.Util
 
   def quotes do
@@ -33,21 +32,26 @@ defmodule Ticker.Quote.Processor do
   def update({:ok, []}), do: Logger.info("No available quotes...")
 
   def update({:ok, quotes}) do
-    quotes_updated = Enum.map(quotes, fn(q) ->
-      if Ticker.Symbol.get_pid(q.symbol) == :empty do
-        if Enum.member?(Application.get_env(:ticker, :security_symbols), q.symbol) do
-          Ticker.Security.Supervisor.add_security(q.symbol)
-        else
-          Ticker.Crypto.Supervisor.add_crypto(q.symbol)
+    quotes_updated =
+      Enum.map(quotes, fn q ->
+        if Ticker.Symbol.get_pid(q.symbol) == :empty do
+          if Enum.member?(Application.get_env(:ticker, :security_symbols), q.symbol) do
+            Ticker.Security.Supervisor.add_security(q.symbol)
+          else
+            Ticker.Crypto.Supervisor.add_crypto(q.symbol)
+          end
         end
-      end
-      q_update = case q.lastReqTime do
-        lrt when lrt == nil -> %{q | lastReqTime: Util.to_unix_milli(Timex.now)}
-        _                   -> q
-      end
-      Ticker.Symbol.add_quote(q_update.symbol, q_update)
-      q_update
-    end)
+
+        q_update =
+          case q.lastReqTime do
+            lrt when lrt == nil -> %{q | lastReqTime: Util.to_unix_milli(Timex.now())}
+            _ -> q
+          end
+
+        Ticker.Symbol.add_quote(q_update.symbol, q_update)
+        q_update
+      end)
+
     {:ok, quotes_updated}
   end
 
@@ -57,12 +61,12 @@ defmodule Ticker.Quote.Processor do
 
   defp collect_security_symbols do
     symbols = Application.get_env(:ticker, :security_symbols)
-    Enum.map(symbols, fn(name) -> Ticker.Symbol.get_symbol(name) end)
+    Enum.map(symbols, fn name -> Ticker.Symbol.get_symbol(name) end)
   end
 
   defp collect_crypto_symbols do
     symbols = Application.get_env(:ticker, :crypto_symbols)
-    Enum.map(symbols, fn(name) -> Ticker.Symbol.get_symbol(name) end)
+    Enum.map(symbols, fn name -> Ticker.Symbol.get_symbol(name) end)
   end
 
   defp process([], _) do
@@ -72,9 +76,10 @@ defmodule Ticker.Quote.Processor do
 
   defp process(symbols, is_crypto) do
     processor = Application.get_env(:ticker, :processor)
+
     symbols
-      |> processor.process(is_crypto)
-      |> update
+    |> processor.process(is_crypto)
+    |> update
   end
 
   defp historical([], _) do
@@ -84,9 +89,9 @@ defmodule Ticker.Quote.Processor do
 
   defp historical(symbols, is_crypto) do
     processor = Application.get_env(:ticker, :processor)
-    symbols
-      |> processor.historical(is_crypto)
-      |> update
-  end
 
+    symbols
+    |> processor.historical(is_crypto)
+    |> update
+  end
 end

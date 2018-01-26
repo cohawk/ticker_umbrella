@@ -1,11 +1,14 @@
 defmodule Ticker.Notify.Quote do
-
   def notify({:ok, quotes}) do
     notify_conf = Application.get_env(:ticker, :quote_notify)
 
     case notify_conf[:notify_module] do
-      nil -> :empty
-      :none -> :empty
+      nil ->
+        :empty
+
+      :none ->
+        :empty
+
       _ ->
         case notify_conf[:notify_fn] do
           nil -> :empty
@@ -16,5 +19,4 @@ defmodule Ticker.Notify.Quote do
   end
 
   def notify(_), do: :empty
-
 end

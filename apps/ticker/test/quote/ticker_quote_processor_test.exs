@@ -3,10 +3,20 @@ defmodule Ticker.Quote.Processor.Test do
 
   @symbol "TSLA"
   @unexpected_symbol "YIKE"
-  @unexpected_quote %Ticker.Quote{symbol: @unexpected_symbol, marketPercent: "0.01024", bidSize: 100,
-      bidPrice: "201.90", askSize: 100, askPrice: "202.10", volume: 33621,
-      lastSalePrice: "200.00", lastSaleSize: 25,
-      lastSaleTime: 1477050375000, lastUpdated: 1477050375000, lastReqTime: 1477050375000}
+  @unexpected_quote %Ticker.Quote{
+    symbol: @unexpected_symbol,
+    marketPercent: "0.01024",
+    bidSize: 100,
+    bidPrice: "201.90",
+    askSize: 100,
+    askPrice: "202.10",
+    volume: 33621,
+    lastSalePrice: "200.00",
+    lastSaleSize: 25,
+    lastSaleTime: 1_477_050_375_000,
+    lastUpdated: 1_477_050_375_000,
+    lastReqTime: 1_477_050_375_000
+  }
 
   setup_all do
     {:ok, _} = Registry.start_link(:unique, :process_registry)
@@ -15,27 +25,27 @@ defmodule Ticker.Quote.Processor.Test do
 
   test "get historical" do
     {:ok, _} = Ticker.Symbol.start_link(@symbol)
-    {:ok, [test_quote|_]} = Ticker.Quote.Processor.historical
+    {:ok, [test_quote | _]} = Ticker.Quote.Processor.historical()
     assert test_quote.symbol == @symbol
   end
 
   test "get empty historical" do
-    assert Ticker.Quote.Processor.historical == {:empty}
+    assert Ticker.Quote.Processor.historical() == {:empty}
   end
 
   test "get quotes" do
     {:ok, _} = Ticker.Symbol.start_link(@symbol)
-    {:ok, [test_quote|_]} = Ticker.Quote.Processor.quotes
+    {:ok, [test_quote | _]} = Ticker.Quote.Processor.quotes()
     assert test_quote.symbol == @symbol
   end
 
   test "get empty quotes" do
-    assert Ticker.Quote.Processor.quotes == {:empty}
+    assert Ticker.Quote.Processor.quotes() == {:empty}
   end
 
   test "quote updated" do
     {:ok, _} = Ticker.Symbol.start_link(@symbol)
-    {:ok, [test_quote|_]} = Ticker.Quote.Processor.quotes
+    {:ok, [test_quote | _]} = Ticker.Quote.Processor.quotes()
     assert Ticker.Symbol.get_quote(@symbol) == test_quote
   end
 
@@ -53,5 +63,4 @@ defmodule Ticker.Quote.Processor.Test do
   test "update error" do
     assert Ticker.Quote.Processor.update({:error, "error"}) == :ok
   end
-
 end

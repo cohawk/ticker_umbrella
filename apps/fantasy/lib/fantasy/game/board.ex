@@ -26,7 +26,7 @@ defmodule Fantasy.Game.Board do
   def create(player_id) do
     Logger.debug("Starting board for player #{player_id}")
 
-    grid = build_grid
+    grid = build_grid()
     ships = Enum.map(@ships_sizes, &%Ship{size: &1})
 
     Agent.start(
@@ -189,7 +189,7 @@ defmodule Fantasy.Game.Board do
   end
 
   # Builds a default grid map
-  defp build_grid do
+  defp build_grid() do
     0..(@size - 1)
     |> Enum.reduce([], &build_rows/2)
     |> List.flatten()

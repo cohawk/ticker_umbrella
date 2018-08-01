@@ -1,5 +1,5 @@
 defmodule Fantasy.Game.Event do
-  def start_link do
+  def start_link() do
     {:ok, manager} = GenEvent.start_link(name: __MODULE__)
 
     handlers = [

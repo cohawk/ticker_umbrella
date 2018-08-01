@@ -4,7 +4,6 @@ defmodule Fantasy.Game.EventHandler do
 
   def handle_event({:game_stopped, game_id}, state) do
     GameChannel.broadcast_stop(game_id)
-
     {:ok, state}
   end
 
@@ -16,7 +15,6 @@ defmodule Fantasy.Game.EventHandler do
 
   defp broadcast_update(state) do
     LobbyChannel.broadcast_current_games()
-
     {:ok, state}
   end
 end

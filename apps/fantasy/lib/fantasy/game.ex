@@ -51,7 +51,7 @@ defmodule Fantasy.Game do
   # SERVER
 
   def init(id) do
-    Battleship.Game.Event.game_created()
+    Fantasy.Game.Event.game_created()
 
     {:ok, %__MODULE__{id: id}}
   end
@@ -64,7 +64,7 @@ defmodule Fantasy.Game do
         {:reply, {:error, "No more players allowed"}, game}
 
       Enum.member?([game.attacker, game.defender], player_id) ->
-        {:reply, {:ok, self}, game}
+        {:reply, {:ok, self()}, game}
 
       true ->
         Process.flag(:trap_exit, true)
@@ -75,9 +75,9 @@ defmodule Fantasy.Game do
 
         game = add_player(game, player_id)
 
-        Battleship.Game.Event.player_joined()
+        Fantasy.Game.Event.player_joined()
 
-        {:reply, {:ok, self}, game}
+        {:reply, {:ok, self()}, game}
     end
   end
 
@@ -109,7 +109,7 @@ defmodule Fantasy.Game do
       |> udpate_turns(player_id, x: x, y: y, result: result)
       |> check_for_winner
 
-    Battleship.Game.Event.player_shot()
+    Fantasy.Game.Event.player_shot()
 
     {:reply, {:ok, game}, game}
   end
@@ -138,7 +138,7 @@ defmodule Fantasy.Game do
     Logger.debug("Handling message in Game #{game.id}")
     Logger.debug("#{inspect(message)}")
 
-    Battleship.Game.Event.game_stopped(game.id)
+    Fantasy.Game.Event.game_stopped(game.id)
 
     {:stop, :normal, game}
   end
@@ -154,7 +154,7 @@ defmodule Fantasy.Game do
 
     for player <- [game.attacker, game.defender], do: destroy_board(player)
 
-    Battleship.Game.Event.game_over()
+    Fantasy.Game.Event.game_over()
 
     :ok
   end

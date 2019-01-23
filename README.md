@@ -1,5 +1,8 @@
 # TickerUmbrella
 
+Originally based off - Elixir OTP Stock Quotes App (IEX Group)
+https://github.com/philcallister/ticker-elixir
+
 ## Installation
 
 ```
@@ -22,6 +25,11 @@ Webpack Development Node Server (React Frontend)
 ```
 cd ticker-react
 npm start
+```
+
+View in Web Browser
+```
+http://localhost:3000
 ```
 
 
